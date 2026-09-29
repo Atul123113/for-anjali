@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For Anjali</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFE3EA;--ink:#1B1E3A;--card:#FFF7F9;--toit:#F2A541;--doo:#F7D64A;--tokai:#2F5BEA;--mute:#5d5f7a}
+@media (prefers-color-scheme:dark){:root{--bg:#171A33;--ink:#FFE3EA;--card:#22264A;--mute:#b4b6d3}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 20px 64px}
+.hero{padding:40px 0 24px;position:relative}
+h1{font-weight:800;font-size:clamp(40px,10vw,84px);line-height:.95;letter-spacing:-.03em;margin:0 0 16px;max-width:11ch}
+.note{font-family:Caveat,cursive;font-size:26px;color:var(--tokai);transform:rotate(-2deg);display:inline-block;margin:0}
+@media (prefers-color-scheme:dark){.note{color:var(--toit)}}
+.coaster{position:absolute;right:0;top:20px;width:120px;height:120px;border-radius:50%;background:var(--toit);color:#1B1E3A;display:grid;place-items:center;text-align:center;font-weight:800;line-height:1.1;transform:rotate(12deg);border:4px dashed #1B1E3A;font-size:15px}
+@media(max-width:600px){.coaster{display:none}}
+.places{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 28px}
+.pl{padding:6px 14px;border-radius:99px;font-weight:800;font-size:14px;color:#1B1E3A}
+.toit{background:var(--toit)}.doo{background:var(--doo)}.tokai{background:var(--tokai);color:#fff}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;background:var(--card);padding:16px;border-radius:20px;margin-bottom:12px}
+label{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+select,input[type=search]{width:100%;padding:10px;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);font:inherit}
+input[type=range]{width:100%;accent-color:var(--tokai)}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid var(--tokai);outline-offset:2px}
+#msg{font-family:Caveat,cursive;font-size:24px;margin:16px 4px}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:16px 4px;border-top:2px solid color-mix(in srgb,var(--ink) 15%,transparent)}
+.row h3{margin:0;font-size:18px;line-height:1.25}
+.meta{color:var(--mute);font-size:14px}
+.seats{grid-row:span 2;text-align:right;font-weight:800;font-size:34px;line-height:1}
+.seats small{display:block;font-size:12px;font-weight:500;color:var(--mute)}
+.tag{justify-self:start;margin-top:6px;font-size:13px;padding:3px 10px;border-radius:99px;font-weight:800;color:#1B1E3A}
+.tag.tokai{color:#fff}
+footer{margin-top:40px;font-family:Caveat,cursive;font-size:26px;text-align:center}
+@media (prefers-reduced-motion:no-preference){.coaster{animation:sp 1.2s ease-out}@keyframes sp{from{transform:rotate(-200deg) scale(.3);opacity:0}}}
+</style></head><body><main>
+<section class="hero">
+<div class="coaster">Anjali<br>&amp;<br>Atul</div>
+<p class="note">psst, Anjali Yewale...</p>
+<h1>Best seat in the house? You.</h1>
+<p>I turned a boring spreadsheet into something you'd actually want to open. Filter away. I'll be here, probably thinking about you.</p>
+<div class="places"><span class="pl toit">Toit</span><span class="pl doo">Doolally</span><span class="pl tokai">Blue Tokai</span></div>
+</section>
+<section class="filters" aria-label="Filters">
+<div><label for="q">Course or college</label><input id="q" type="search" placeholder="Psychiatry, Guntur..."></div>
+<div><label for="st">State</label><select id="st"><option value="">All states</option></select></div>
+<div><label for="cat">Category</label><select id="cat"><option value="">All</option></select></div>
+<div><label for="mn">At least <b id="mnv">1</b> seats</label><input id="mn" type="range" min="1" max="30" value="1"></div>
+</section>
+<div id="msg" aria-live="polite"></div>
+<section id="list"></section>
+<footer>Made with a lot of coffee and a little courage, Atul</footer>
+</main>
+<script>
+const SAMPLE=[];
+let D=[];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function spot(n){
+  if(n>=10)return{c:"toit",t:"Toit-sized",l:"Plenty of room, like a Sunday at Toit. Bring me along."};
+  if(n>=4)return{c:"doo",t:"Doolally-sized",l:"Cozy enough to share a table. Just like us."};
+  return{c:"tokai",t:"Blue Tokai-sized",l:"Rare and small, like the perfect cup. Also, like you."};
+}
+function fill(sel,vals){[...new Set(vals)].sort().forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;sel.appendChild(o)})}
+function render(){
+  const q=$("q").value.toLowerCase(),st=$("st").value,cat=$("cat").value,mn=+$("mn").value;
+  $("mnv").textContent=mn;
+  const r=D.filter(d=>(!st||d.state===st)&&(!cat||d.category===cat)&&d.seats>=mn&&(!q||(d.course+" "+d.college).toLowerCase().includes(q))).sort((a,b)=>b.seats-a.seats);
+  const total=r.reduce((s,d)=>s+d.seats,0);
+  $("msg").textContent=r.length?`${total} seats across ${r.length} spots. Reward yourself with a Blue Tokai run after this.`:"Nothing here. Loosen a filter, or just come find me.";
+  $("list").innerHTML=r.map(d=>{const s=spot(d.seats);return`<article class="row"><div><h3>${esc(d.college)}</h3><div class="meta">${esc(d.course)} · ${esc(d.state)} · ${esc(d.category)}</div><span class="tag ${s.c}" style="background:var(--${s.c==="tokai"?"tokai":s.c})">${s.t}</span> <span class="meta">${s.l}</span></div><div class="seats">${d.seats}<small>seats</small></div></article>`}).join("");
+}
+function init(data){
+  D=data;
+  const mx=Math.max(1,...D.map(d=>d.seats));$("mn").max=Math.min(mx,60);
+  fill($("st"),D.map(d=>d.state));fill($("cat"),D.map(d=>d.category));
+  ["q","st","cat","mn"].forEach(id=>$(id).addEventListener("input",render));
+  render();
+}
+fetch("data.json").then(r=>r.json()).then(init).catch(()=>init(SAMPLE.length?SAMPLE:[]));
+</script></body></html>
